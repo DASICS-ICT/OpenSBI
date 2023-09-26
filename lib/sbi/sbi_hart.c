@@ -98,11 +98,22 @@ static int delegate_traps(struct sbi_scratch *scratch)
 	/* Send M-mode interrupts and most exceptions to S-mode */
 	interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP;
 	exceptions = (1U << CAUSE_MISALIGNED_FETCH) | (1U << CAUSE_BREAKPOINT) |
-		     (1U << CAUSE_USER_ECALL);
+		     (1U << CAUSE_USER_ECALL) |
+			/* dasics exceptions */
+			(1U << CAUSE_DASICS_UFETCH_FAULT) |
+			(1U << CAUSE_DASICS_SFETCH_FAULT) |
+			(1U << CAUSE_DASICS_ULOAD_FAULT) |
+			(1U << CAUSE_DASICS_SLOAD_FAULT) |
+			(1U << CAUSE_DASICS_USTORE_FAULT) |
+			(1U << CAUSE_DASICS_SSTORE_FAULT) |
+			(1U << CAUSE_DASICS_UECALL_FAULT) |
+			(1U << CAUSE_DASICS_SECALL_FAULT);
+;
 	if (sbi_platform_has_mfaults_delegation(plat))
 		exceptions |= (1U << CAUSE_FETCH_PAGE_FAULT) |
 			      (1U << CAUSE_LOAD_PAGE_FAULT) |
 			      (1U << CAUSE_STORE_PAGE_FAULT);
+
 
 	/*
 	 * If hypervisor extension available then we only handle hypervisor
@@ -118,9 +129,18 @@ static int delegate_traps(struct sbi_scratch *scratch)
 		exceptions |= (1U << CAUSE_VIRTUAL_INST_FAULT);
 		exceptions |= (1U << CAUSE_STORE_GUEST_PAGE_FAULT);
 	}
-
 	csr_write(CSR_MIDELEG, interrupts);
 	csr_write(CSR_MEDELEG, exceptions);
+	
+	if (!misa_extension('N')) 
+		return 0;
+
+	uintptr_t uexceptions = 
+	(1U << CAUSE_DASICS_UFETCH_FAULT) |
+	(1U << CAUSE_DASICS_ULOAD_FAULT)  |
+	(1U << CAUSE_DASICS_USTORE_FAULT) |
+	(1U << CAUSE_DASICS_UECALL_FAULT);
+	csr_write(CSR_SEDELEG, uexceptions);
 
 	return 0;
 }
