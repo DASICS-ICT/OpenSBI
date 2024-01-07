@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "xilinx-uart.h": "c",
+        "fdt_serial.h": "c",
+        "fdt_helper.h": "c"
+    }
+}
