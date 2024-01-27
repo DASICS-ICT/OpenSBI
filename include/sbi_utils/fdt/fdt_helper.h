@@ -50,7 +50,7 @@ int fdt_parse_uart8250_node(void *fdt, int nodeoffset,
 
 int fdt_parse_uart8250(void *fdt, struct platform_uart_data *uart,
 		       const char *compatible);
-
+			   
 struct plic_data;
 
 int fdt_parse_plic_node(void *fdt, int nodeoffset, struct plic_data *plic);
@@ -64,5 +64,6 @@ int fdt_parse_clint_node(void *fdt, int nodeoffset, bool for_timer,
 
 int fdt_parse_compat_addr(void *fdt, unsigned long *addr,
 			  const char *compatible);
+
 
 #endif /* __FDT_HELPER_H__ */
