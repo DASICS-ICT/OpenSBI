@@ -6,7 +6,7 @@
  * Authors:
  *   Anup Patel <anup.patel@wdc.com>
  */
-
+// #include <sbi/sbi_console.h>
 #include <sbi/riscv_asm.h>
 #include <sbi/riscv_encoding.h>
 #include <sbi/sbi_bitops.h>
@@ -21,7 +21,7 @@ typedef int (*illegal_insn_func)(ulong insn, struct sbi_trap_regs *regs);
 static int truly_illegal_insn(ulong insn, struct sbi_trap_regs *regs)
 {
 	struct sbi_trap_info trap;
-
+	// sbi_printf("[SBI] catch illegal insn, epc=0x%lx, insn=0x%lx\n",regs->mepc,insn);
 	trap.epc = regs->mepc;
 	trap.cause = CAUSE_ILLEGAL_INSTRUCTION;
 	trap.tval = insn;
