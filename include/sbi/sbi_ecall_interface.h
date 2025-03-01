@@ -28,6 +28,7 @@
 #define SBI_EXT_RFENCE				0x52464E43
 #define SBI_EXT_HSM				0x48534D
 #define SBI_EXT_SRST				0x53525354
+#define SBI_EXT_DASICS          0xda51c5
 
 /* SBI function IDs for BASE extension*/
 #define SBI_EXT_BASE_GET_SPEC_VERSION		0x0
@@ -82,6 +83,9 @@
 #define SBI_EXT_FIRMWARE_START			0x0A000000
 #define SBI_EXT_FIRMWARE_END			0x0AFFFFFF
 
+/* SBI function IDs for DASICS extension */
+#define SBI_DASICS_SET_SM  0x1
+
 /* SBI return error codes */
 #define SBI_SUCCESS				0
 #define SBI_ERR_FAILED				-1
@@ -92,6 +96,7 @@
 #define SBI_ERR_ALREADY_AVAILABLE		-6
 
 #define SBI_LAST_ERR				SBI_ERR_ALREADY_AVAILABLE
+
 
 /* clang-format on */
 
