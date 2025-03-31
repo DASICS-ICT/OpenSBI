@@ -101,13 +101,8 @@ static int delegate_traps(struct sbi_scratch *scratch)
 		     (1U << CAUSE_USER_ECALL) |
 			/* dasics exceptions */
 			(1U << CAUSE_DASICS_UFETCH_FAULT) |
-			(1U << CAUSE_DASICS_SFETCH_FAULT) |
 			(1U << CAUSE_DASICS_ULOAD_FAULT) |
-			(1U << CAUSE_DASICS_SLOAD_FAULT) |
-			(1U << CAUSE_DASICS_USTORE_FAULT) |
-			(1U << CAUSE_DASICS_SSTORE_FAULT) |
-			(1U << CAUSE_DASICS_UECALL_FAULT) |
-			(1U << CAUSE_DASICS_SECALL_FAULT);
+			(1U << CAUSE_DASICS_USTORE_FAULT);
 ;
 	if (sbi_platform_has_mfaults_delegation(plat))
 		exceptions |= (1U << CAUSE_FETCH_PAGE_FAULT) |
@@ -135,12 +130,11 @@ static int delegate_traps(struct sbi_scratch *scratch)
 	if (!misa_extension('N')) 
 		return 0;
 
-	uintptr_t uexceptions = 
-	(1U << CAUSE_DASICS_UFETCH_FAULT) |
-	(1U << CAUSE_DASICS_ULOAD_FAULT)  |
-	(1U << CAUSE_DASICS_USTORE_FAULT) |
-	(1U << CAUSE_DASICS_UECALL_FAULT);
-	csr_write(CSR_SEDELEG, uexceptions);
+	// uintptr_t uexceptions = 
+	// (1U << CAUSE_DASICS_UFETCH_FAULT) |
+	// (1U << CAUSE_DASICS_ULOAD_FAULT)  |
+	// (1U << CAUSE_DASICS_USTORE_FAULT);
+	// csr_write(CSR_SEDELEG, uexceptions);
 
 	return 0;
 }
