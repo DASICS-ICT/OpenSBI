@@ -31,6 +31,19 @@ static int truly_illegal_insn(ulong insn, struct sbi_trap_regs *regs)
 	return sbi_trap_redirect(regs, &trap);
 }
 
+static int sbi_emulate_fdi_ecall(ulong insn, struct sbi_trap_regs *regs)
+{
+	struct sbi_trap_info trap;
+
+	trap.epc = regs->mepc;
+	trap.cause = CAUSE_USER_ECALL;
+	trap.tval = 0;
+	trap.tval2 = 0;
+	trap.tinst = 0;
+
+	return sbi_trap_redirect(regs, &trap);
+}
+
 static int system_opcode_insn(ulong insn, struct sbi_trap_regs *regs)
 {
 	int do_write, rs1_num = (insn >> 15) & 0x1f;
@@ -111,7 +124,8 @@ static illegal_insn_func illegal_insn_table[32] = {
 	system_opcode_insn, /* 28 */
 	truly_illegal_insn, /* 29 */
 	truly_illegal_insn, /* 30 */
-	truly_illegal_insn  /* 31 */
+	// truly_illegal_insn  /* 31 */
+	sbi_emulate_fdi_ecall /* 31 */
 };
 
 int sbi_illegal_insn_handler(ulong insn, struct sbi_trap_regs *regs)
