@@ -32,6 +32,7 @@
 #define MSTATUS_TVM			_UL(0x00100000)
 #define MSTATUS_TW			_UL(0x00200000)
 #define MSTATUS_TSR			_UL(0x00400000)
+#define MSTATUS_SPELP			_UL(0x00800000)
 #define MSTATUS32_SD			_UL(0x80000000)
 #if __riscv_xlen == 64
 #define MSTATUS_UXL			_ULL(0x0000000300000000)
@@ -39,6 +40,7 @@
 #define MSTATUS_SBE			_ULL(0x0000001000000000)
 #define MSTATUS_MBE			_ULL(0x0000002000000000)
 #define MSTATUS_MPV			_ULL(0x0000008000000000)
+#define MSTATUS_MPELP			_ULL(0x0000020000000000)
 #else
 #define MSTATUSH_SBE			_UL(0x00000010)
 #define MSTATUSH_MBE			_UL(0x00000020)
@@ -150,6 +152,26 @@
 #else
 #define PMP_ADDR_MASK			_UL(0xFFFFFFFF)
 #endif
+
+/* menvcfg/senvcfg bits (Zicfilp and other extensions) */
+#define ENVCFG_FIOM			_UL(0x00000001)
+#define ENVCFG_LPE			_UL(0x00000004)
+#define ENVCFG_CBIE_SHIFT		4
+#define ENVCFG_CBIE			(_UL(0x3) << ENVCFG_CBIE_SHIFT)
+#define ENVCFG_CBCFE			_UL(0x00000040)
+#define ENVCFG_CBZE			_UL(0x00000080)
+#if __riscv_xlen == 64
+#define ENVCFG_PBMTE			_ULL(0x4000000000000000)
+#define ENVCFG_STCE			_ULL(0x8000000000000000)
+#endif
+
+/* mseccfg bits (Zicfilp and other extensions) */
+#define MSECCFG_MML			_UL(0x00000001)
+#define MSECCFG_MMWP			_UL(0x00000002)
+#define MSECCFG_RLB			_UL(0x00000004)
+#define MSECCFG_USEED			_UL(0x00000100)
+#define MSECCFG_SSEED			_UL(0x00000200)
+#define MSECCFG_MLPE			_UL(0x00000400)
 
 #if __riscv_xlen == 64
 #define MSTATUS_SD			MSTATUS64_SD
@@ -276,6 +298,9 @@
 /* Supervisor Protection and Translation */
 #define CSR_SATP			0x180
 
+/* Supervisor Configuration */
+#define CSR_SENVCFG			0x10a
+
 /* ===== Hypervisor-level CSRs ===== */
 
 /* Hypervisor Trap Setup (H-extension) */
@@ -327,6 +352,7 @@
 #define CSR_MIE				0x304
 #define CSR_MTVEC			0x305
 #define CSR_MCOUNTEREN			0x306
+#define CSR_MENVCFG			0x30a
 #define CSR_MSTATUSH			0x310
 
 /* Machine Trap Handling */
@@ -528,6 +554,9 @@
 #define CSR_DSCRATCH0			0x7b2
 #define CSR_DSCRATCH1			0x7b3
 
+/* Machine Security Configuration */
+#define CSR_MSECCFG			0x747
+
 /* ===== Trap/Exception Causes ===== */
 
 #define CAUSE_MISALIGNED_FETCH		0x0
@@ -545,6 +574,7 @@
 #define CAUSE_FETCH_PAGE_FAULT		0xc
 #define CAUSE_LOAD_PAGE_FAULT		0xd
 #define CAUSE_STORE_PAGE_FAULT		0xf
+#define CAUSE_SOFTWARE_CHECK		0x12
 #define CAUSE_FETCH_GUEST_PAGE_FAULT	0x14
 #define CAUSE_LOAD_GUEST_PAGE_FAULT	0x15
 #define CAUSE_VIRTUAL_INST_FAULT	0x16

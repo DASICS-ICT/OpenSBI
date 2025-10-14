@@ -116,6 +116,13 @@ static int delegate_traps(struct sbi_scratch *scratch)
 
 
 	/*
+	 * Delegate Software Check Exception (Zicfilp) to S-mode
+	 * This allows Linux kernel to handle landing pad violations in S/U modes
+	 * M-mode violations will still trap to M-mode
+	 */
+	exceptions |= (1U << CAUSE_SOFTWARE_CHECK);
+
+	/*
 	 * If hypervisor extension available then we only handle hypervisor
 	 * calls (i.e. ecalls from HS-mode) in M-mode.
 	 *
