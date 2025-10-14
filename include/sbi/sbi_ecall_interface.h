@@ -28,6 +28,7 @@
 #define SBI_EXT_RFENCE				0x52464E43
 #define SBI_EXT_HSM				0x48534D
 #define SBI_EXT_SRST				0x53525354
+#define SBI_EXT_ZICFILP				0x5A494350
 
 /* SBI function IDs for BASE extension*/
 #define SBI_EXT_BASE_GET_SPEC_VERSION		0x0
@@ -73,6 +74,10 @@
 
 #define SBI_SRST_RESET_REASON_NONE	0x0
 #define SBI_SRST_RESET_REASON_SYSFAIL	0x1
+
+/* SBI function IDs for Zicfilp extension */
+#define SBI_EXT_ZICFILP_SET_SENVCFG_LPE		0x0
+#define SBI_EXT_ZICFILP_GET_SENVCFG_LPE		0x1
 
 #define SBI_SPEC_VERSION_MAJOR_OFFSET		24
 #define SBI_SPEC_VERSION_MAJOR_MASK		0x7f
