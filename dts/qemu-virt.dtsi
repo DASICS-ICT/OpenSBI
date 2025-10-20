@@ -1,0 +1,28 @@
+/dts-v1/;
+
+/ {
+	L18: soc {
+		L2: clint@2000000 {
+			compatible = "riscv,clint0";
+			interrupts-extended = <&L4 3 &L4 7>;
+			reg = <0x0 0x2000000 0x0 0x10000>;
+			reg-names = "control";
+			clock-frequency-mhz = <500>;
+		};
+		L14: serial@10000000 {
+			compatible = "ns16550a";
+			//interrupt-parent = <&L1>;
+			interrupts = <10>;
+			reg = <0x0 0x10000000 0x0 0x100>;
+			reg-names = "control";
+			clock-frequency = <3686400>;
+		};
+	};
+	chosen {
+		bootargs = "console=ttyS0 earlycon=sbi";
+	};
+	L11: memory@80000000 {
+		device_type = "memory";
+		reg = <0x0 0x80000000 0x0 0x10000000>;
+	};
+};

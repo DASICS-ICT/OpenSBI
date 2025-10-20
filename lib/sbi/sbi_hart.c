@@ -339,20 +339,6 @@ done:
 		sbi_strncpy(features_str, "none", nfstr);
 }
 
-static unsigned long hart_pmp_get_allowed_addr(void)
-{
-	unsigned long val = 0;
-	struct sbi_trap_info trap = {0};
-
-	csr_write_allowed(CSR_PMPADDR0, (ulong)&trap, PMP_ADDR_MASK);			\
-	if (!trap.cause) {
-		val = csr_read_allowed(CSR_PMPADDR0, (ulong)&trap);
-		if (trap.cause)
-			val = 0;
-	}
-
-	return val;
-}
 
 static void hart_detect_features(struct sbi_scratch *scratch)
 {
@@ -405,17 +391,11 @@ static void hart_detect_features(struct sbi_scratch *scratch)
 	__check_csr_32(__csr + 32, __rdonly, __wrval, __field, __skip)
 
 	/**
-	 * Detect the allowed address bits & granularity. At least PMPADDR0
-	 * should be implemented.
+	 * Initialize PMP to fixed values (16 regions)
 	 */
-	val = hart_pmp_get_allowed_addr();
-	if (val) {
-		hfeatures->pmp_gran =  1 << (__ffs(val) + 2);
-		hfeatures->pmp_addr_bits = __fls(val) + 1;
-		/* Detect number of PMP regions. At least PMPADDR0 should be implemented*/
-		__check_csr_64(CSR_PMPADDR0, 0, val, pmp_count, __pmp_skip);
-	}
-__pmp_skip:
+	hfeatures->pmp_count = 16;
+	hfeatures->pmp_gran = 4;  /* 4 bytes granularity */
+	hfeatures->pmp_addr_bits = __riscv_xlen;  /* Use full XLEN bits */
 
 	/* Detect number of MHPM counters */
 	__check_csr(CSR_MHPMCOUNTER3, 0, 1UL, mhpm_count, __mhpm_skip);
