@@ -9,3 +9,6 @@ install/
 
 # Development friendly files
 tags
+
+# Device tree binaries
+*.dtb
