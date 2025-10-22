@@ -12,3 +12,4 @@ tags
 
 # Device tree binaries
 *.dtb
+dts/platform.dtsi
