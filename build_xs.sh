@@ -1,9 +1,9 @@
 #!/bin/bash
-# Build OpenSBI for NEMU with correct device tree
+# Build OpenSBI for XiangShan with correct device tree
 set -e
 
-# Switch to noop device tree (shared with XiangShan)
-echo "[INFO] Switching to noop.dtsi for NEMU build"
+# Switch to XiangShan/NoOP device tree
+echo "[INFO] Switching to noop.dtsi for XiangShan build"
 cd dts && rm -f platform.dtsi && ln -s noop.dtsi platform.dtsi && cd ..
 echo "[INFO] platform.dtsi -> $(readlink dts/platform.dtsi)"
 
@@ -19,4 +19,4 @@ make PLATFORM=generic \
      FW_PAYLOAD_PATH=../riscv-linux/arch/riscv/boot/Image \
      -j$(nproc)
 
-echo "[SUCCESS] OpenSBI built for NEMU: build/platform/generic/firmware/fw_payload.bin" 
+echo "[SUCCESS] OpenSBI built for XiangShan: build/platform/generic/firmware/fw_payload.bin"
