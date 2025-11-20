@@ -96,19 +96,13 @@ static int delegate_traps(struct sbi_scratch *scratch)
 		return 0;
 
 	/* Send M-mode interrupts and most exceptions to S-mode */
-	interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP;
+	interrupts = MIP_SSIP | MIP_STIP | MIP_SEIP | MIP_USIP | MIP_UTIP | MIP_UEIP;
 	exceptions = (1U << CAUSE_MISALIGNED_FETCH) | (1U << CAUSE_BREAKPOINT) |
 		     (1U << CAUSE_USER_ECALL) |
 			/* dasics exceptions */
-			(1U << CAUSE_DASICS_UFETCH_FAULT) |
-			(1U << CAUSE_DASICS_SFETCH_FAULT) |
-			(1U << CAUSE_DASICS_ULOAD_FAULT) |
-			(1U << CAUSE_DASICS_SLOAD_FAULT) |
-			(1U << CAUSE_DASICS_USTORE_FAULT) |
-			(1U << CAUSE_DASICS_SSTORE_FAULT) |
-			(1U << CAUSE_DASICS_UECALL_FAULT) |
-			(1U << CAUSE_DASICS_SECALL_FAULT);
-;
+			(1U << CAUSE_DASICS_UCHECK_FAULT) |
+			(1U << CAUSE_DASICS_SCHECK_FAULT);
+
 	if (sbi_platform_has_mfaults_delegation(plat))
 		exceptions |= (1U << CAUSE_FETCH_PAGE_FAULT) |
 			      (1U << CAUSE_LOAD_PAGE_FAULT) |
@@ -135,11 +129,11 @@ static int delegate_traps(struct sbi_scratch *scratch)
 	if (!misa_extension('N')) 
 		return 0;
 
+	uintptr_t uinterrupts = MIP_USIP | MIP_UTIP | MIP_UEIP;
 	uintptr_t uexceptions = 
-	(1U << CAUSE_DASICS_UFETCH_FAULT) |
-	(1U << CAUSE_DASICS_ULOAD_FAULT)  |
-	(1U << CAUSE_DASICS_USTORE_FAULT) |
-	(1U << CAUSE_DASICS_UECALL_FAULT);
+	(1U << CAUSE_DASICS_UCHECK_FAULT);
+
+	csr_write(CSR_SIDELEG, uinterrupts);
 	csr_write(CSR_SEDELEG, uexceptions);
 
 	return 0;
