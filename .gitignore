@@ -10,4 +10,5 @@ install/
 # Development friendly files
 tags
 
+# dtb
 system.dtb
