@@ -9,7 +9,7 @@
 
 # Blobs to build
 FW_TEXT_START=0x80000000
-FW_PAYLOAD_FDT_ADDR=0x88000000
+FW_PAYLOAD_FDT_ADDR=0x90000000
 
 # platform-specific macro define for platform.c
 platform-genflags-y += -DSERVE_UART0_ADDR=0x30000000 \
