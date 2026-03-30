@@ -20,9 +20,13 @@ enum sbi_hart_features {
 	SBI_HART_HAS_MCOUNTEREN = (1 << 1),
 	/** HART has timer csr implementation in hardware */
 	SBI_HART_HAS_TIME = (1 << 2),
+	/** Pointer masking (menvcfg.PMM) */
+	SBI_HART_HAS_PMM = (1 << 3),
+	/** ZIMT tagged memory (menvcfg.MT_MODE) */
+	SBI_HART_HAS_ZIMT = (1 << 4),
 
 	/** Last index of Hart features*/
-	SBI_HART_HAS_LAST_FEATURE = SBI_HART_HAS_TIME,
+	SBI_HART_HAS_LAST_FEATURE = SBI_HART_HAS_ZIMT,
 };
 
 struct sbi_scratch;

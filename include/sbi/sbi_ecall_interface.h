@@ -28,6 +28,7 @@
 #define SBI_EXT_RFENCE				0x52464E43
 #define SBI_EXT_HSM				0x48534D
 #define SBI_EXT_SRST				0x53525354
+#define SBI_EXT_ZIMT				0x5A494D54
 
 /* SBI function IDs for BASE extension*/
 #define SBI_EXT_BASE_GET_SPEC_VERSION		0x0
@@ -65,6 +66,12 @@
 
 /* SBI function IDs for SRST extension */
 #define SBI_EXT_SRST_RESET			0x0
+
+/* SBI function IDs for ZIMT extension */
+#define SBI_EXT_ZIMT_ENABLE			0x0
+#define SBI_EXT_ZIMT_DISABLE			0x1
+#define SBI_EXT_ZIMT_GET_TAG_BITS		0x2
+#define SBI_EXT_ZIMT_SET_TAG_MASK		0x3
 
 #define SBI_SRST_RESET_TYPE_SHUTDOWN		0x0
 #define SBI_SRST_RESET_TYPE_COLD_REBOOT	0x1

@@ -119,6 +119,16 @@
 #define SATP_MODE_SV57			_UL(10)
 #define SATP_MODE_SV64			_UL(11)
 
+/* menvcfg / senvcfg: PMM (bits [33:32]) and ZIMT MT_MODE (bits [35:34]) */
+#define ENVCFG_PMM			(0x3ULL << 32)
+#define ENVCFG_PMM_PMLEN_0		(0x0ULL << 32)
+#define ENVCFG_PMM_PMLEN_7		(0x2ULL << 32)
+#define ENVCFG_PMM_PMLEN_16		(0x3ULL << 32)
+#define ENVCFG_MT_MODE			(0x3ULL << 34)
+#define ENVCFG_MT_MODE_OFF		(0x0ULL << 34)
+#define ENVCFG_MT_MODE_4BIT		(0x2ULL << 34)
+#define ENVCFG_MT_MODE_7BIT		(0x3ULL << 34)
+
 #define HGATP_MODE_OFF			_UL(0)
 #define HGATP_MODE_SV32X4		_UL(1)
 #define HGATP_MODE_SV39X4		_UL(8)
@@ -265,6 +275,7 @@
 #define CSR_SIE				0x104
 #define CSR_STVEC			0x105
 #define CSR_SCOUNTEREN			0x106
+#define CSR_SENVCFG			0x10a
 
 /* Supervisor Trap Handling */
 #define CSR_SSCRATCH			0x140
@@ -328,6 +339,10 @@
 #define CSR_MTVEC			0x305
 #define CSR_MCOUNTEREN			0x306
 #define CSR_MSTATUSH			0x310
+#define CSR_MENVCFG			0x30a
+#define CSR_MENVCFGH			0x31a
+#define CSR_MSECCFG			0x747
+#define CSR_MSECCFGH			0x757
 
 /* Machine Trap Handling */
 #define CSR_MSCRATCH			0x340
@@ -549,6 +564,9 @@
 #define CAUSE_LOAD_GUEST_PAGE_FAULT	0x15
 #define CAUSE_VIRTUAL_INST_FAULT	0x16
 #define CAUSE_STORE_GUEST_PAGE_FAULT	0x17
+#define CAUSE_SOFTWARE_CHECK		0x12
+
+#define CAUSE_SOFTWARE_CHECK_MTE_TVAL	4
 
 /* ===== Instruction Encodings ===== */
 

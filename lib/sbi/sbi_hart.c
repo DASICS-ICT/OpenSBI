@@ -50,6 +50,19 @@ static void mstatus_init(struct sbi_scratch *scratch)
 
 	csr_write(CSR_MSTATUS, mstatus_val);
 
+#if __riscv_xlen == 64
+	{
+		unsigned long menvcfg_val = 0;
+
+		if (sbi_hart_has_feature(scratch, SBI_HART_HAS_PMM))
+			menvcfg_val |= ENVCFG_PMM_PMLEN_16;
+		if (sbi_hart_has_feature(scratch, SBI_HART_HAS_ZIMT))
+			menvcfg_val |= ENVCFG_MT_MODE_4BIT;
+		if (menvcfg_val)
+			csr_write(CSR_MENVCFG, menvcfg_val);
+	}
+#endif
+
 	/* Enable user/supervisor use of perf counters */
 	if (misa_extension('S') &&
 	    sbi_hart_has_feature(scratch, SBI_HART_HAS_SCOUNTEREN))
@@ -103,6 +116,9 @@ static int delegate_traps(struct sbi_scratch *scratch)
 		exceptions |= (1U << CAUSE_FETCH_PAGE_FAULT) |
 			      (1U << CAUSE_LOAD_PAGE_FAULT) |
 			      (1U << CAUSE_STORE_PAGE_FAULT);
+
+	if (sbi_hart_has_feature(scratch, SBI_HART_HAS_ZIMT))
+		exceptions |= (1U << CAUSE_SOFTWARE_CHECK);
 
 	/*
 	 * If hypervisor extension available then we only handle hypervisor
@@ -261,6 +277,12 @@ static inline char *sbi_hart_feature_id2string(unsigned long feature)
 		break;
 	case SBI_HART_HAS_TIME:
 		fstr = "time";
+		break;
+	case SBI_HART_HAS_PMM:
+		fstr = "pmm";
+		break;
+	case SBI_HART_HAS_ZIMT:
+		fstr = "zimt";
 		break;
 	default:
 		break;
@@ -428,6 +450,29 @@ __mhpm_skip:
 	csr_read_allowed(CSR_TIME, (unsigned long)&trap);
 	if (!trap.cause)
 		hfeatures->features |= SBI_HART_HAS_TIME;
+
+#if __riscv_xlen == 64
+	/* Probe menvcfg for PMM / ZIMT */
+	trap.cause = 0;
+	val = csr_read_allowed(CSR_MENVCFG, (unsigned long)&trap);
+	if (!trap.cause) {
+		unsigned long saved = val;
+
+		trap.cause = 0;
+		csr_write_allowed(CSR_MENVCFG, (unsigned long)&trap,
+				  saved | ENVCFG_PMM_PMLEN_7);
+		if (!trap.cause && (csr_read(CSR_MENVCFG) & ENVCFG_PMM))
+			hfeatures->features |= SBI_HART_HAS_PMM;
+
+		trap.cause = 0;
+		csr_write_allowed(CSR_MENVCFG, (unsigned long)&trap,
+				  saved | ENVCFG_MT_MODE_4BIT);
+		if (!trap.cause && (csr_read(CSR_MENVCFG) & ENVCFG_MT_MODE))
+			hfeatures->features |= SBI_HART_HAS_ZIMT;
+
+		csr_write(CSR_MENVCFG, saved);
+	}
+#endif
 }
 
 int sbi_hart_init(struct sbi_scratch *scratch, bool cold_boot)
