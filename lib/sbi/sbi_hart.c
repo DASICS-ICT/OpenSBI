@@ -56,8 +56,6 @@ static void mstatus_init(struct sbi_scratch *scratch)
 
 		if (sbi_hart_has_feature(scratch, SBI_HART_HAS_PMM))
 			menvcfg_val |= ENVCFG_PMM_PMLEN_16;
-		if (sbi_hart_has_feature(scratch, SBI_HART_HAS_ZIMT))
-			menvcfg_val |= ENVCFG_MT_MODE_4BIT;
 		if (menvcfg_val)
 			csr_write(CSR_MENVCFG, menvcfg_val);
 	}

@@ -11,6 +11,7 @@
 #include <sbi/sbi_error.h>
 #include <sbi/sbi_hart.h>
 #include <sbi/sbi_scratch.h>
+#include <sbi/sbi_trap.h>
 
 static int sbi_ecall_zimt_probe(unsigned long extid, unsigned long *out_val)
 {
