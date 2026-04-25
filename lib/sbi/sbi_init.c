@@ -25,6 +25,10 @@
 #include <sbi/sbi_tlb.h>
 #include <sbi/sbi_version.h>
 
+#ifdef WITH_SM
+#include <sm.h>
+#endif
+
 #define BANNER                                              \
 	"   ____                    _____ ____ _____\n"     \
 	"  / __ \\                  / ____|  _ \\_   _|\n"  \

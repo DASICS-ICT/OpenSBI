@@ -55,3 +55,7 @@ endif
 ifdef FW_OPTIONS
 firmware-genflags-y += -DFW_OPTIONS=$(FW_OPTIONS)
 endif
+
+ifdef FW_ONE_PAGE_TO_PAYLOAD
+firmware-genflags-y += -DFW_ONE_PAGE_TO_PAYLOAD=$(FW_ONE_PAGE_TO_PAYLOAD)
+endif

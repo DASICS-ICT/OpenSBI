@@ -24,6 +24,10 @@ struct sbi_ipi_data {
 	unsigned long ipi_type;
 };
 
+#ifdef WITH_SM 
+#include <sm_sbi_opensbi.h>
+#endif
+
 static unsigned long ipi_data_off;
 
 static const struct sbi_ipi_event_ops *ipi_ops_array[SBI_IPI_EVENT_MAX];

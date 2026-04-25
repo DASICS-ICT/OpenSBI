@@ -19,6 +19,7 @@ libsbi-objs-y += sbi_domain.o
 libsbi-objs-y += sbi_ecall.o
 libsbi-objs-y += sbi_ecall_base.o
 libsbi-objs-y += sbi_ecall_hsm.o
+libsbi-objs-y += sbi_ecall_zimt.o
 libsbi-objs-y += sbi_ecall_legacy.o
 libsbi-objs-y += sbi_ecall_replace.o
 libsbi-objs-y += sbi_ecall_vendor.o
