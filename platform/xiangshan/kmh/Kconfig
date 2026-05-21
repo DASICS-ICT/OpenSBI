@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: BSD-2-Clause
+
+config PLATFORM_KMH
+	bool
+	select FDT
+	select IPI_MSWI
+	select SERIAL_UART8250
+	select SERIAL_VIRTIO_CONSOLE
+	select TIMER_MTIMER
+	default y
