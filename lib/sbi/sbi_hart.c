@@ -110,6 +110,14 @@ static void mstatus_init(struct sbi_scratch *scratch)
 #endif
 	}
 
+#ifdef CONFIG_DASICS
+	/*
+	 * DASICS uses custom S/U CSRs and therefore requires both lower-level
+	 * custom CSR access and the S-mode state-enable CSR itself.
+	 */
+	csr_set(CSR_MSTATEEN0, SMSTATEEN0_CS | SMSTATEEN_STATEN);
+#endif
+
 	if (sbi_hart_priv_version(scratch) >= SBI_HART_PRIV_VER_1_12) {
 		menvcfg_val = csr_read(CSR_MENVCFG);
 #if __riscv_xlen == 32
@@ -203,6 +211,10 @@ static int delegate_traps(struct sbi_scratch *scratch)
 
 	exceptions = (1U << CAUSE_MISALIGNED_FETCH) | (1U << CAUSE_BREAKPOINT) |
 		     (1U << CAUSE_USER_ECALL);
+#ifdef CONFIG_DASICS
+	exceptions |= (1U << CAUSE_DASICS_UCHECK_FAULT) |
+		      (1U << CAUSE_DASICS_SCHECK_FAULT);
+#endif
 	if (sbi_platform_has_mfaults_delegation(plat))
 		exceptions |= (1U << CAUSE_FETCH_PAGE_FAULT) |
 			      (1U << CAUSE_LOAD_PAGE_FAULT) |

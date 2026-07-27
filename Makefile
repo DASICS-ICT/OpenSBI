@@ -345,6 +345,9 @@ endif
 GENFLAGS	+=	$(libsbiutils-genflags-y)
 GENFLAGS	+=	$(platform-genflags-y)
 GENFLAGS	+=	$(firmware-genflags-y)
+ifeq ($(DASICS),y)
+GENFLAGS	+=	-DCONFIG_DASICS
+endif
 
 CFLAGS		=	-g -Wall -Werror -ffreestanding -nostdlib -fno-stack-protector -fno-strict-aliasing
 ifneq ($(DEBUG),)

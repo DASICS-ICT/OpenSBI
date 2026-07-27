@@ -12,6 +12,9 @@
 #include <sbi/riscv_barrier.h>
 #include <sbi/sbi_console.h>
 #include <sbi/sbi_cppc.h>
+#ifdef CONFIG_DASICS
+#include <sbi/sbi_dasics.h>
+#endif
 #include <sbi/sbi_domain.h>
 #include <sbi/sbi_ecall.h>
 #include <sbi/sbi_fwft.h>
@@ -264,6 +267,16 @@ static void __noreturn init_coldboot(struct sbi_scratch *scratch, u32 hartid)
 	rc = sbi_console_init(scratch);
 	if (rc)
 		sbi_hart_hang();
+
+#ifdef CONFIG_DASICS
+	/*
+	 * Run destructive boot-hart checks after the console is available
+	 * and before lower-privilege software can establish DASICS state.
+	 */
+	rc = sbi_dasics_test();
+	if (rc)
+		sbi_hart_hang();
+#endif
 
 	rc = sbi_sse_init(scratch, true);
 	if (rc) {
