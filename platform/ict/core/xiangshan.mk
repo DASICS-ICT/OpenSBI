@@ -9,5 +9,4 @@
 
 platform-genflags-y += -DSERVE_CLINT_ADDR=0x38000000
 platform-genflags-y += -DSERVE_PLIC_ADDR=0x3c000000
-platform-genflags-y += -DSERVE_PLIC_NUM_SOURCES=16
-
+platform-genflags-y += -DSERVE_PLIC_NUM_SOURCES=65
