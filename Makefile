@@ -346,7 +346,13 @@ GENFLAGS	+=	$(libsbiutils-genflags-y)
 GENFLAGS	+=	$(platform-genflags-y)
 GENFLAGS	+=	$(firmware-genflags-y)
 ifeq ($(DASICS),y)
+ifeq ($(SPEC06_BASELINE),y)
+$(error DASICS and SPEC06_BASELINE cannot be enabled together)
+endif
 GENFLAGS	+=	-DCONFIG_DASICS
+endif
+ifeq ($(SPEC06_BASELINE),y)
+GENFLAGS	+=	-DCONFIG_SPEC06_BASELINE
 endif
 
 CFLAGS		=	-g -Wall -Werror -ffreestanding -nostdlib -fno-stack-protector -fno-strict-aliasing

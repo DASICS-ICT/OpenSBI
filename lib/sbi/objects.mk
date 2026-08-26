@@ -67,6 +67,7 @@ libsbi-objs-y += sbi_console.o
 libsbi-objs-y += sbi_domain_context.o
 libsbi-objs-y += sbi_domain.o
 libsbi-objs-$(DASICS) += sbi_dasics.o
+libsbi-objs-$(SPEC06_BASELINE) += sbi_spec06_baseline.o
 libsbi-objs-y += sbi_emulate_csr.o
 libsbi-objs-y += sbi_fifo.o
 libsbi-objs-y += sbi_fwft.o

@@ -15,6 +15,9 @@
 #ifdef CONFIG_DASICS
 #include <sbi/sbi_dasics.h>
 #endif
+#ifdef CONFIG_SPEC06_BASELINE
+#include <sbi/sbi_spec06_baseline.h>
+#endif
 #include <sbi/sbi_domain.h>
 #include <sbi/sbi_ecall.h>
 #include <sbi/sbi_fwft.h>
@@ -274,6 +277,12 @@ static void __noreturn init_coldboot(struct sbi_scratch *scratch, u32 hartid)
 	 * and before lower-privilege software can establish DASICS state.
 	 */
 	rc = sbi_dasics_test();
+	if (rc)
+		sbi_hart_hang();
+#endif
+
+#ifdef CONFIG_SPEC06_BASELINE
+	rc = sbi_spec06_baseline_disable();
 	if (rc)
 		sbi_hart_hang();
 #endif
