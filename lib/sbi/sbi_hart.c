@@ -212,6 +212,7 @@ static int delegate_traps(struct sbi_scratch *scratch)
 	exceptions = (1U << CAUSE_MISALIGNED_FETCH) | (1U << CAUSE_BREAKPOINT) |
 		     (1U << CAUSE_USER_ECALL);
 #ifdef CONFIG_DASICS
+	interrupts |= (1UL << 4); /* UTimer: M -> S; Linux owns S -> U delegation. */
 	exceptions |= (1U << CAUSE_DASICS_UCHECK_FAULT) |
 		      (1U << CAUSE_DASICS_SCHECK_FAULT);
 #endif
