@@ -3,6 +3,9 @@
 config PLATFORM_KMH_S2C19P
 	bool
 	select FDT
+	select FDT_SERIAL
+	select FDT_SERIAL_DDR
+	select FDT_SERIAL_UART8250
 	select IPI_MSWI
 	select SERIAL_UART8250
 	select SERIAL_VIRTIO_CONSOLE

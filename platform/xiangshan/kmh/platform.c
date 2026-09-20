@@ -10,6 +10,7 @@
 #include <sbi/riscv_asm.h>
 #include <sbi/riscv_encoding.h>
 #include <sbi/sbi_console.h>
+#include <sbi/sbi_error.h>
 #include <sbi/sbi_const.h>
 #include <sbi/sbi_platform.h>
 #include <sbi/sbi_system.h>
@@ -19,6 +20,7 @@
 #include <sbi_utils/irqchip/plic.h>
 #include <sbi_utils/timer/aclint_mtimer.h>
 #include <sbi_utils/serial/uart8250.h>
+#include <sbi_utils/serial/fdt_serial_ddr.h>
 #include "platform.h"
 
 static u32 generic_hart_index2id[SBI_HARTMASK_MAX_BITS] = {0};
@@ -45,8 +47,14 @@ static struct aclint_mtimer_data mtimer = {
 
 static int kmh_early_init(bool cold_boot)
 {
+	int rc;
+
 	if (!cold_boot)
 		return 0;
+
+	rc = fdt_serial_ddr_init(fdt_get_address());
+	if (rc != SBI_ENODEV)
+		return rc;
 
 	return uart8250_init(KMH_UART_ADDR,
 			     KMH_UART_FREQ,

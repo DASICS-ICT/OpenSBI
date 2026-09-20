@@ -10,6 +10,9 @@
 libsbiutils-objs-$(CONFIG_FDT_SERIAL) += serial/fdt_serial.o
 libsbiutils-objs-$(CONFIG_FDT_SERIAL) += serial/fdt_serial_drivers.o
 
+carray-fdt_serial_drivers-$(CONFIG_FDT_SERIAL_DDR) += fdt_serial_ddr
+libsbiutils-objs-$(CONFIG_FDT_SERIAL_DDR) += serial/fdt_serial_ddr.o
+
 carray-fdt_serial_drivers-$(CONFIG_FDT_SERIAL_CADENCE) += fdt_serial_cadence
 libsbiutils-objs-$(CONFIG_FDT_SERIAL_CADENCE) += serial/fdt_serial_cadence.o
 
