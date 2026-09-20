@@ -5,7 +5,6 @@
 #include <sbi/riscv_asm.h>
 #include <sbi/riscv_encoding.h>
 #include <sbi/sbi_console.h>
-#include <sbi/sbi_error.h>
 #include <sbi/sbi_const.h>
 #include <sbi/sbi_platform.h>
 #include <sbi/sbi_system.h>
@@ -13,8 +12,6 @@
 #include <sbi_utils/fdt/fdt_helper.h>
 #include <sbi_utils/ipi/aclint_mswi.h>
 #include <sbi_utils/serial/uart8250.h>
-#include <sbi_utils/serial/fdt_serial_ddr.h>
-#include <sbi_utils/serial/fdt_serial.h>
 #include <sbi_utils/timer/aclint_mtimer.h>
 
 #include "platform.h"
@@ -43,19 +40,8 @@ static struct aclint_mtimer_data mtimer = {
 
 static int kmh_s2c19p_early_init(bool cold_boot)
 {
-	int rc;
-
 	if (!cold_boot)
 		return 0;
-
-	rc = fdt_serial_ddr_init(fdt_get_address());
-	if (rc != SBI_ENODEV)
-		return rc;
-
-	/* Board DT supplies UART clock, baud and register layout. */
-	rc = fdt_serial_init();
-	if (rc != SBI_ENODEV)
-		return rc;
 
 	return uart8250_init(KMH_S2C19P_UART_ADDR,
 			     KMH_S2C19P_UART_FREQ,
@@ -96,10 +82,6 @@ static int kmh_s2c19p_timer_init(bool cold_boot)
 	int ret;
 
 	if (cold_boot) {
-		/* The UVHS wrapper divides the board RTC input by ten. */
-		unsigned long freq;
-		if (!fdt_parse_timebase_frequency(fdt_get_address(), &freq) && freq)
-			mtimer.mtime_freq = freq;
 		ret = aclint_mtimer_cold_init(&mtimer, NULL);
 		if (ret)
 			return ret;

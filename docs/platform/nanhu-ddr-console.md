@@ -4,10 +4,12 @@ The `bosc,nanhu-ddr-console` backend records OpenSBI and Linux SBI console outpu
 in reserved DDR. It requires RV64 Nanhu with Zicbom and 64-byte cache blocks.
 It provides no input and does not stop the CPU or interpret application text.
 
-The driver is included by the `xiangshan/kmh`, `xiangshan/kmh_s2c19p` and generic
-platform configurations. It activates only when `/chosen/stdout-path` selects
-its node. The XiangShan platforms retain their existing UART initialization when
-DDR is not selected. A malformed selected DDR node is an error, not a UART fallback.
+The `xiangshan/kmh_vp1902` platform includes this driver and selects DDR only
+when `/chosen/stdout-path` points to its node. Otherwise the platform uses UART
+with the clock and baud rate from the device tree. A malformed selected DDR node
+is an error, not a UART fallback. The `kmh` and `kmh_s2c19p` platforms keep their
+original console initialization; the generic platform does not enable this driver
+by default. See [the VP1902 platform](kmh_vp1902.md) for board parameters.
 
 Example (merge into the board's DT):
 

@@ -3,8 +3,6 @@
 config PLATFORM_KMH
 	bool
 	select FDT
-	select FDT_SERIAL
-	select FDT_SERIAL_DDR
 	select IPI_MSWI
 	select SERIAL_UART8250
 	select SERIAL_VIRTIO_CONSOLE
