@@ -347,6 +347,9 @@ GENFLAGS	+=	$(platform-genflags-y)
 GENFLAGS	+=	$(firmware-genflags-y)
 ifeq ($(DASICS),y)
 GENFLAGS	+=	-DCONFIG_DASICS
+ifeq ($(DASICS_VALIDATION),y)
+GENFLAGS	+=	-DCONFIG_DASICS_VALIDATION
+endif
 endif
 
 CFLAGS		=	-g -Wall -Werror -ffreestanding -nostdlib -fno-stack-protector -fno-strict-aliasing

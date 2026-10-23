@@ -391,11 +391,69 @@ static unsigned long dasics_smoke(void)
 	return failures;
 }
 
+#ifdef CONFIG_DASICS_VALIDATION
+static __attribute__((noinline)) unsigned long dasics_machine_utimer_freeze(void)
+{
+	const unsigned long budget = 0x100000040UL;
+	unsigned long saved, before, after, checksum, restored;
+	unsigned long irq_flags, irq_after;
+	unsigned long failures;
+	bool frozen, restored_ok;
+
+	irq_flags = csr_read_clear(CSR_MSTATUS, MSTATUS_MIE);
+	/* This boot-hart interval never leaves M-mode or calls another function.
+	 * The dependency chain proves execution, not an exact cycle count. */
+	__asm__ __volatile__(
+		".option push\n"
+		".option norvc\n"
+		".option norelax\n"
+		".balign 4\n"
+		".global sbi_dasics_utimer_freeze_begin\n"
+		"sbi_dasics_utimer_freeze_begin:\n"
+		"csrr %[saved], 0x045\n"
+		"csrw 0x045, %[budget]\n"
+		"csrr %[before], 0x045\n"
+		"li %[checksum], 0\n"
+		".rept 64\n"
+		"addi %[checksum], %[checksum], 1\n"
+		".endr\n"
+		"csrr %[after], 0x045\n"
+		"csrw 0x045, %[saved]\n"
+		"csrr %[restored], 0x045\n"
+		".global sbi_dasics_utimer_freeze_end\n"
+		"sbi_dasics_utimer_freeze_end:\n"
+		".option pop\n"
+		: [saved] "=&r" (saved), [before] "=&r" (before),
+		  [after] "=&r" (after), [checksum] "=&r" (checksum),
+		  [restored] "=&r" (restored)
+		: [budget] "r" (budget)
+		: "memory");
+	csr_set(CSR_MSTATUS, irq_flags & MSTATUS_MIE);
+	irq_after = csr_read(CSR_MSTATUS) & MSTATUS_MIE;
+
+	frozen = before == budget && after == budget && checksum == 64;
+	restored_ok = restored == saved &&
+		      irq_after == (irq_flags & MSTATUS_MIE);
+	failures = !frozen + !restored_ok;
+	sbi_printf("FDI_UTIMER_PRIVILEGE version=1 privilege=machine "
+		   "saved=0x%lx budget=0x%lx before=0x%lx after=0x%lx "
+		   "checksum=0x%lx checksum_expected=0x40 restored=0x%lx "
+		   "freeze=%s restore=%s result=%s\r\n",
+		   saved, budget, before, after, checksum, restored,
+		   frozen ? "PASS" : "FAIL", restored_ok ? "PASS" : "FAIL",
+		   failures ? "FAIL" : "PASS");
+	return failures;
+}
+#endif
+
 int sbi_dasics_test(void)
 {
 	unsigned long failures;
 
 	failures = dasics_mask_ops();
 	failures += dasics_smoke();
+#ifdef CONFIG_DASICS_VALIDATION
+	failures += dasics_machine_utimer_freeze();
+#endif
 	return failures ? SBI_EFAIL : 0;
 }
